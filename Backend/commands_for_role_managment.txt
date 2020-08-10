@@ -1,0 +1,99 @@
+laravel-permission:
+* that mian a command in bash or description for a note
+- that mian a simple command in php
+-- main command for the note
+--- sc
+
+* composer require spatie/laravel-permission
+
+- config/app.php
+	- 'providers' => [
+    // ...
+    Spatie\Permission\PermissionServiceProvider::class,
+];
+
+* php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+
+* php artisan migrate
+
+* in User model 
+	-use HasRoles
+
+* to create a role 
+	- Role::create(['name'=>'writer Example']);
+
+* to create a premission 
+	- Permission::create(['name'=>'write post Example']);
+
+* to assign a permission to a role 
+	- $role=Role::findById(1);
+	- $permission=Permission::findById(1);
+	-- $role->givePermissionTo($permission); // if i have the role and want assign that for a permission 
+	--- $permission->assignRole($role); // if i have the permission and want assign role to this permission
+
+* Multiple permissions can be synced to a role using 1 of these methods
+	-- $role->syncPermissions($permissions);
+	--- $permission->syncRoles($roles);
+
+* A permission can be removed from a role using 1 of these methods:
+	-- $role->revokePermissionTo($permission);
+	--- $permission->removeRole($role);
+
+* get a list of all permissions directly assigned to the user
+	- $permissionNames = $user->getPermissionNames(); // collection of name strings
+	-- $permissions = $user->permissions; // collection of permission objects
+
+* get all permissions for the user, either directly, or from roles, or from both
+	- $permissions = $user->getDirectPermissions();
+	- $permissions = $user->getPermissionsViaRoles();
+	- $permissions = $user->getAllPermissions();
+
+* get the names of the user's roles
+	- $roles = $user->getRoleNames(); // Returns a collection
+
+* get all user with a ( role / permission )
+	- User::role/permission('name of role or permission')
+
+* A permission can be given to any user
+	-- $user->givePermissionTo('edit articles');
+	--- $user->givePermissionTo('edit articles', 'delete articles');
+	---- $user->givePermissionTo(['edit articles', 'delete articles']);
+
+* A permission can be revoked from a user:
+	-- $user->revokePermissionTo('edit articles');
+
+* Or revoke & add new permissions in one go:
+	-- $user->syncPermissions(['edit articles', 'delete articles']);
+
+* check if a user has a permission:
+	-- $user->hasPermissionTo('edit articles');
+	--- $user->hasPermissionTo('1');
+	---- $user->hasPermissionTo(Permission::find(1)->id);
+	----- $user->hasPermissionTo($somePermission->id);
+
+* You can check if a user has Any of an array of permissions:
+	------ $user->hasAnyPermission(['edit articles', 'publish articles', 'unpublish articles']);
+
+* has All of an array of permissions
+	------- $user->hasAllPermissions(['edit articles', 'publish articles', 'unpublish articles']);
+
+
+passport packge
+
+* import:
+	* composer require laravel/passport
+
+* in User model
+	- use HasApiToken
+
+* php artisan migrate
+* php artisan passport:install
+
+* in app/providers/AuthServiceProvider , in boot method
+	- Passport::routes();
+
+* in config/auth.php in guards, api, driver, token
+	-  passport
+
+
+	
